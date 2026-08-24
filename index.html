@@ -38,7 +38,10 @@
 </head>
 <body>
 <div id="map"></div>
+<<<<<<< HEAD
 <div id="status">Loading density.tif…</div>
+=======
+>>>>>>> 9cb6a36 (MainPush)
 <div id="opacity-bar">
   <label for="opacity">Overlay</label>
   <input id="opacity" type="range" min="0" max="100" value="75">
@@ -46,6 +49,7 @@
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<<<<<<< HEAD
 <script src="https://unpkg.com/georaster"></script>
 <script src="https://unpkg.com/georaster-layer-for-leaflet"></script>
 <script>
@@ -71,6 +75,20 @@ function magma(t) {
        + `${Math.round(g1 + f * (g2 - g1))},`
        + `${Math.round(b1 + f * (b2 - b1))})`;
 }
+=======
+<script>
+// Top of the colour ramp, for the legend label only. Must match the vmax
+// baked into the tiles when they were generated — see magma.txt.
+const VMAX = 50;
+
+// Deepest zoom level present in tiles/. Beyond this Leaflet upscales the
+// z-MAX_NATIVE_ZOOM tiles rather than showing gaps.
+const MAX_NATIVE_ZOOM = 12;
+
+// Bounding box of the tiled area, [[south, west], [north, east]].
+// Whole-UK default; tighten it to your raster's real extent if narrower.
+const DATA_BOUNDS = [[49.8, -8.7], [61.0, 2.0]];
+>>>>>>> 9cb6a36 (MainPush)
 
 const CARTO_ATTR = "&copy; OpenStreetMap, &copy; CARTO";
 
@@ -93,6 +111,7 @@ const baseLayers = {
 
 const map = L.map("map", { layers: [baseLayers["Dark"]] });
 L.control.layers(baseLayers, null, { position: "topright" }).addTo(map);
+<<<<<<< HEAD
 map.setView([51.5, -0.1], 10);
 
 // Legend text needs to stay readable on the pale basemaps.
@@ -103,6 +122,16 @@ function syncTheme(name) {
 map.on("baselayerchange", e => syncTheme(e.name));
 
 const status = document.getElementById("status");
+=======
+map.fitBounds(DATA_BOUNDS);
+
+// Legend text needs to stay readable on the pale basemaps.
+map.on("baselayerchange", e => {
+  const light = e.name === "Light" || e.name === "Streets";
+  document.getElementById("map").style.background = light ? "#eee" : "#111";
+});
+
+>>>>>>> 9cb6a36 (MainPush)
 const opacityInput = document.getElementById("opacity");
 const opacityVal = document.getElementById("opacity-val");
 
@@ -111,6 +140,7 @@ const opacityBar = document.getElementById("opacity-bar");
 L.DomEvent.disableClickPropagation(opacityBar);
 L.DomEvent.disableScrollPropagation(opacityBar);
 
+<<<<<<< HEAD
 fetch("density.tif")
   .then(r => {
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -156,6 +186,33 @@ fetch("density.tif")
     status.textContent = `Could not load density.tif — ${err.message}. `
       + `Serve this folder over http:// rather than opening the file directly.`;
   });
+=======
+const density = L.tileLayer("tiles/{z}/{x}/{y}.png", {
+  opacity: opacityInput.value / 100,
+  maxNativeZoom: MAX_NATIVE_ZOOM,
+  maxZoom: 19,
+  bounds: DATA_BOUNDS,
+  // tilePane holds the basemaps; overlayPane always paints above them, so
+  // switching basemap can never bury the density layer.
+  pane: "overlayPane",
+  attribution: "Density &copy; DXAN"
+}).addTo(map);
+
+opacityInput.addEventListener("input", () => {
+  density.setOpacity(opacityInput.value / 100);
+  opacityVal.textContent = `${opacityInput.value}%`;
+});
+
+const legend = L.control({ position: "bottomright" });
+legend.onAdd = () => {
+  const div = L.DomUtil.create("div", "legend");
+  div.innerHTML = `count per km²
+    <div class="ramp"></div>
+    <div class="ticks"><span>0</span><span>${VMAX}+</span></div>`;
+  return div;
+};
+legend.addTo(map);
+>>>>>>> 9cb6a36 (MainPush)
 </script>
 </body>
 </html>
