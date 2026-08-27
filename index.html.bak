@@ -58,17 +58,14 @@ const MAX_NATIVE_ZOOM = 12;
 // Whole-UK default; tighten it to your raster's real extent if narrower.
 const DATA_BOUNDS = [[49.8, -8.7], [61.0, 2.0]];
 
-// Esri's Canvas basemaps need no API key, unlike CARTO's, which now do.
-// They stop at z16 natively; Leaflet upscales beyond that.
-const ESRI_ATTR = "Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ";
-const ESRI_CANVAS = "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/";
+const CARTO_ATTR = "&copy; OpenStreetMap, &copy; CARTO";
 
 const baseLayers = {
-  "Dark": L.tileLayer(ESRI_CANVAS + "World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
-    attribution: ESRI_ATTR, maxNativeZoom: 16, maxZoom: 19
+  "Dark": L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    attribution: CARTO_ATTR, maxZoom: 19
   }),
-  "Light": L.tileLayer(ESRI_CANVAS + "World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}", {
-    attribution: ESRI_ATTR, maxNativeZoom: 16, maxZoom: 19
+  "Light": L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+    attribution: CARTO_ATTR, maxZoom: 19
   }),
   "Streets": L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: "&copy; OpenStreetMap contributors", maxZoom: 19
