@@ -34,13 +34,6 @@
   }
   #opacity-bar input { width: 160px; accent-color: #de4968; }
   #opacity-bar span { width: 30px; text-align: right; font-variant-numeric: tabular-nums; }
-  /* logo bottom-right, where the legend used to sit; transparent so the
-     map shows through. pointer-events:none keeps map drags working. */
-  #uprn-logo {
-    position: absolute; z-index: 1000; right: 12px; bottom: 12px;
-    background: transparent; pointer-events: none;
-  }
-  #uprn-logo img { display: block; height: 72px; width: auto; background: transparent; }
 </style>
 </head>
 <body>
@@ -49,10 +42,6 @@
   <label for="opacity">Overlay</label>
   <input id="opacity" type="range" min="0" max="100" value="75">
   <span id="opacity-val">75%</span>
-</div>
-
-<div id="uprn-logo">
-  <img src="Proptech_Logo_RGB_Full_Colour_Long.png" alt="Proptech Analytics">
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -91,12 +80,7 @@ const baseLayers = {
   })
 };
 
-const map = L.map("map", {
-  layers: [baseLayers["Dark"]],
-  // default bottomright would sit beneath the logo
-  attributionControl: false
-});
-L.control.attribution({ position: "bottomleft" }).addTo(map);
+const map = L.map("map", { layers: [baseLayers["Dark"]] });
 L.control.layers(baseLayers, null, { position: "topright" }).addTo(map);
 map.fitBounds(DATA_BOUNDS);
 
@@ -130,7 +114,7 @@ opacityInput.addEventListener("input", () => {
   opacityVal.textContent = `${opacityInput.value}%`;
 });
 
-const legend = L.control({ position: "bottomleft" });
+const legend = L.control({ position: "bottomright" });
 legend.onAdd = () => {
   const div = L.DomUtil.create("div", "legend");
   div.innerHTML = `count per km²
